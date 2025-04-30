@@ -36,8 +36,8 @@ const defaultSettings: UserSettings = {
 };
 
 export default function SettingsPage() {
-  // Get theme from provider
-  const { theme, setTheme } = useTheme();
+  // Get theme and mode from provider
+  const { colorTheme, mode, setColorTheme, setMode } = useTheme();
   
   // Settings state
   const [settings, setSettings] = useState<UserSettings>(() => {
@@ -213,32 +213,118 @@ export default function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <Label>Theme</Label>
-                <div className="flex gap-4">
-                  <Button
-                    variant={theme === "light" ? "default" : "outline"}
-                    className="flex gap-2 items-center"
-                    onClick={() => setTheme("light")}
-                  >
-                    <Sun className="h-4 w-4" />
-                    Light
-                  </Button>
-                  <Button
-                    variant={theme === "dark" ? "default" : "outline"}
-                    className="flex gap-2 items-center"
-                    onClick={() => setTheme("dark")}
-                  >
-                    <Moon className="h-4 w-4" />
-                    Dark
-                  </Button>
-                  <Button
-                    variant={theme === "system" ? "default" : "outline"}
-                    className="flex gap-2 items-center"
-                    onClick={() => setTheme("system")}
-                  >
-                    System
-                  </Button>
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-base font-semibold">Display Mode</Label>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    <Button
+                      variant={mode === "light" ? "default" : "outline"}
+                      className="flex gap-2 items-center"
+                      onClick={() => setMode("light")}
+                    >
+                      <Sun className="h-4 w-4" />
+                      Light
+                    </Button>
+                    <Button
+                      variant={mode === "dark" ? "default" : "outline"}
+                      className="flex gap-2 items-center"
+                      onClick={() => setMode("dark")}
+                    >
+                      <Moon className="h-4 w-4" />
+                      Dark
+                    </Button>
+                    <Button
+                      variant={mode === "system" ? "default" : "outline"}
+                      className="flex gap-2 items-center"
+                      onClick={() => setMode("system")}
+                    >
+                      System
+                    </Button>
+                  </div>
+                </div>
+                
+                <div>
+                  <Label className="text-base font-semibold">Color Theme</Label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-2">
+                    <Button
+                      variant={colorTheme === "default" ? "default" : "outline"}
+                      className="h-20 w-full relative overflow-hidden" 
+                      onClick={() => setColorTheme("default")}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-300 opacity-30" />
+                      <span className="relative z-10">Default</span>
+                    </Button>
+                    <Button
+                      variant={colorTheme === "blue" ? "default" : "outline"}
+                      className="h-20 w-full relative overflow-hidden" 
+                      onClick={() => setColorTheme("blue")}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-blue-500 opacity-30" />
+                      <span className="relative z-10">Blue</span>
+                    </Button>
+                    <Button
+                      variant={colorTheme === "green" ? "default" : "outline"}
+                      className="h-20 w-full relative overflow-hidden"
+                      onClick={() => setColorTheme("green")}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-green-100 to-green-500 opacity-30" />
+                      <span className="relative z-10">Green</span>
+                    </Button>
+                    <Button
+                      variant={colorTheme === "purple" ? "default" : "outline"}
+                      className="h-20 w-full relative overflow-hidden"
+                      onClick={() => setColorTheme("purple")}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-100 to-purple-500 opacity-30" />
+                      <span className="relative z-10">Purple</span>
+                    </Button>
+                    <Button
+                      variant={colorTheme === "orange" ? "default" : "outline"}
+                      className="h-20 w-full relative overflow-hidden"
+                      onClick={() => setColorTheme("orange")}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-orange-100 to-orange-500 opacity-30" />
+                      <span className="relative z-10">Orange</span>
+                    </Button>
+                    <Button
+                      variant={colorTheme === "nord" ? "default" : "outline"}
+                      className="h-20 w-full relative overflow-hidden"
+                      onClick={() => setColorTheme("nord")}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-slate-200 to-blue-400 opacity-30" />
+                      <span className="relative z-10">Nord</span>
+                    </Button>
+                    <Button
+                      variant={colorTheme === "cyberpunk" ? "default" : "outline"}
+                      className="h-20 w-full relative overflow-hidden"
+                      onClick={() => setColorTheme("cyberpunk")}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-pink-500 via-purple-800 to-blue-600 opacity-30" />
+                      <span className="relative z-10">Cyberpunk</span>
+                    </Button>
+                    <Button
+                      variant={colorTheme === "minimal" ? "default" : "outline"}
+                      className="h-20 w-full relative overflow-hidden"
+                      onClick={() => setColorTheme("minimal")}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-300 opacity-30" />
+                      <span className="relative z-10">Minimal</span>
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="bg-card rounded-lg p-4 border">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-medium">Current Theme Preview</h3>
+                    <div className="text-xs text-muted-foreground">
+                      {colorTheme === "default" ? "Default" : colorTheme.charAt(0).toUpperCase() + colorTheme.slice(1)} + {mode.charAt(0).toUpperCase() + mode.slice(1)} Mode
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="h-8 rounded bg-primary flex items-center justify-center text-xs text-primary-foreground">Primary</div>
+                    <div className="h-8 rounded bg-secondary flex items-center justify-center text-xs text-secondary-foreground">Secondary</div>
+                    <div className="h-8 rounded bg-accent flex items-center justify-center text-xs text-accent-foreground">Accent</div>
+                  </div>
                 </div>
               </div>
             </CardContent>

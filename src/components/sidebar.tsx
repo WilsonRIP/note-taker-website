@@ -26,11 +26,11 @@ import { useTheme } from "./theme-provider";
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { mode, setMode, resolvedMode } = useTheme();
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    setMode(mode === "dark" ? "light" : "dark");
   };
 
   const navItems = [
@@ -125,7 +125,7 @@ export function Sidebar() {
           onClick={toggleTheme}
           className={cn(isCollapsed ? "mx-auto" : "ml-auto")}
         >
-          {theme === "dark" ? (
+          {resolvedMode === "dark" ? (
             <Sun className="h-5 w-5" />
           ) : (
             <Moon className="h-5 w-5" />

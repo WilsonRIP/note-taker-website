@@ -43,21 +43,71 @@ const RichTextEditor = ({
   onContentChangeAction: (value: string) => void;
 }) => {
   const editorRef = useRef<HTMLDivElement>(null);
+  const [isRTL, setIsRTL] = useState(false); // Track if we're in RTL mode
   
-  // Update onChange handler
+  // Custom editor to handle the reversed typing issue
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor) return;
-    
+
+    // Override default editor behavior
+    document.execCommand('defaultParagraphSeparator', false, 'p');
+    document.execCommand('styleWithCSS', false, 'true');
+
+    // Create a custom keypress handler to fix the reversed text issue
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Only handle character keys
+      if (e.key.length === 1) {
+        e.preventDefault(); // Prevent default input behavior
+        
+        // Get current selection
+        const selection = window.getSelection();
+        if (!selection || selection.rangeCount === 0) return;
+        
+        // Insert the character programmatically
+        const range = selection.getRangeAt(0);
+        const textNode = document.createTextNode(e.key);
+        range.insertNode(textNode);
+        
+        // Move cursor after inserted character
+        range.setStartAfter(textNode);
+        range.setEndAfter(textNode);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        // Update content
+        onContentChangeAction(editor.innerHTML);
+      }
+    };
+
+    // Handle all other editor events
     const handleInput = () => {
       onContentChangeAction(editor.innerHTML);
     };
+
+    // Add event listeners
+    editor.addEventListener('keypress', handleKeyPress);
+    editor.addEventListener('input', handleInput);
     
-    editor.addEventListener("input", handleInput);
+    // Track changes from toolbar actions
+    const toolbarObserver = new MutationObserver(() => {
+      onContentChangeAction(editor.innerHTML);
+    });
+    
+    toolbarObserver.observe(editor, { 
+      childList: true, 
+      subtree: true, 
+      characterData: true,
+      attributes: true 
+    });
+
     return () => {
-      editor.removeEventListener("input", handleInput);
+      editor.removeEventListener('keypress', handleKeyPress);
+      editor.removeEventListener('input', handleInput);
+      toolbarObserver.disconnect();
     };
   }, [onContentChangeAction]);
+  
   
   // Set initial content
   useEffect(() => {
@@ -345,9 +395,18 @@ const RichTextEditor = ({
       
       <div 
         ref={editorRef}
-        className="ProseMirror min-h-[300px] focus:outline-none p-4"
-        contentEditable
+        className="ProseMirror min-h-[300px] focus:outline-none p-4 text-left"
+        contentEditable="true"
+        dir="ltr"
+        style={{ 
+          direction: 'ltr', 
+          textAlign: 'left',
+          unicodeBidi: 'plaintext',
+          writingMode: 'horizontal-tb'
+        }}
         dangerouslySetInnerHTML={{ __html: content }}
+        spellCheck="true"
+        suppressContentEditableWarning
       />
     </div>
   );
